@@ -1,0 +1,17 @@
+.building__treething-node {
+  width: 100%;
+  >.header {
+    >span {
+      display: inline-block;
+    }
+    >.expand {
+      font-size: 10px;
+    }
+    >.expand, >.spacer {
+      width: 10px;
+    }
+  }
+  >.children {
+    margin-left: 10px;
+  }
+}

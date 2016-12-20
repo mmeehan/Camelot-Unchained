@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import {Promise} from 'es6-promise';
-import { client, restAPI, building, BuildingBlueprint, buildUIMode } from 'camelot-unchained';
+import { client, building, BuildingBlueprint, buildUIMode } from 'camelot-unchained';
 import faker from './requester_fake';
 
 class BlueprintRequests {
@@ -48,7 +48,7 @@ class BlueprintRequests {
     if (this.fake) {
       return faker.requestBlueprintDelete(blueprint);
     }
-    
+
     building.requestBlueprintDelete(blueprint);
   }
 

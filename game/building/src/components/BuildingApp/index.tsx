@@ -11,21 +11,26 @@ import {events, buildUIMode} from 'camelot-unchained';
 import ActionBar from '../../widgets/ActionBar';
 import BuildingPanel from '../../widgets/BuildPanel';
 import SelectionView from '../../widgets/SelectionView';
+import TreeView from '../../widgets/TreeView';
+import {GlobalState} from '../../services/session/reducer';
+import {TreeThingNode} from '../../services/session/treething';
 
 import requester from '../../services/session/requester';
 import {BuildingItem, BuildingItemType} from '../../lib/BuildingItem';
 
-function select(state: any): any {
+function select(state: GlobalState): any {
   return {
     selectedItem: state.selection.selectedItem,
-    buildingMode: state.building.mode
-  }
+    buildingMode: state.building.mode,
+    root: state.treeThing.root
+  };
 }
 
 export interface BuildingAppProps {
   dispatch?: (action: any) => void;
   buildingMode?: buildUIMode;
   selectedItem?: BuildingItem;
+  root?: TreeThingNode;
 }
 
 export interface BuildingAppState {
@@ -64,6 +69,13 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
     return null;
   }
 
+  createTreeView(active: boolean): JSX.Element {
+    if (active) {
+      return (<TreeView root={this.props.root}/>);
+    }
+    return null;
+  }
+
   render() {
     const active: boolean = this.props.buildingMode > 0;
     const triggerMode: buildUIMode = active ? buildUIMode.NOTBUILDING : buildUIMode.PLACINGPHANTOM;
@@ -76,6 +88,7 @@ class BuildingApp extends React.Component<BuildingAppProps, BuildingAppState> {
         {this.createActionButton(active) }
         {this.createBuildingPanel(active) }
         {this.createSelectionView(active) }
+        {this.createTreeView(active) }
       </div>
     )
   }

@@ -19,7 +19,7 @@ html, body {
   width: 67px;
   height: 61px;
   background: url('../images/building-btn.jpg') no-repeat bottom left;
-  
+
   &.active div {
       background: url('../images/active-frame.gif') no-repeat bottom left;
       background-size: 67px 61px;
@@ -55,3 +55,4 @@ html, body {
 @import './widgets/Actionbar/index';
 @import './widgets/BuildPanel/index';
 @import './widgets/SavedDraggable/index';
+@import './widgets/TreeView/index';

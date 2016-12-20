@@ -13,11 +13,11 @@ const thunk = require('redux-thunk').default;
 import reducer from './services/session/reducer';
 import {initializeBuilding} from './services/session/building';
 import {initializeSelections} from './services/session/selection';
+import {initializeTreeThing} from './services/session/treething';
 import App from './components/BuildingApp';
 
 const store = createStore(reducer, applyMiddleware(thunk));
 const root = document.getElementById('cse-ui-building');
-
 
 // #TODO Reminder: export a has api check from the camelot-unchained lib
 // interface for window cuAPI
@@ -35,20 +35,20 @@ if ((window.opener && window.opener.cuAPI) || window.cuAPI) {
     initializeBuilding(store.dispatch);
     initializeSelections(store.dispatch);
     ReactDom.render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
-    root)
-  });  
+      <Provider store={store}>
+        <App />
+      </Provider>
+      , root);
+    initializeTreeThing(store.dispatch);
+  });
 } else {
-
   document.body.style.backgroundImage = "url('./images/cube-bg.jpg')";
   initializeBuilding(store.dispatch);
   initializeSelections(store.dispatch);
-
   ReactDom.render(
     <Provider store={store}>
       <App />
-    </Provider>,
-    root);
+    </Provider>
+    , root);
+  initializeTreeThing(store.dispatch);
 }

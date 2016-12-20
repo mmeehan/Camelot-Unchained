@@ -8,16 +8,20 @@ import {combineReducers} from 'redux';
 
 import selectionReducer, {SelectionState} from './selection';
 import buildingReducer, {BuildingState} from './building';
+import treeThingReducer, {TreeThingState} from './treething';
 
 const selection = selectionReducer;
 const building = buildingReducer;
+const treeThing = treeThingReducer;
 
 export default combineReducers({
   selection,
-  building
+  building,
+  treeThing,
 });
 
 export interface GlobalState {
   selection: SelectionState,
-  building: BuildingState
+  building: BuildingState,
+  treeThing: TreeThingState
 }
