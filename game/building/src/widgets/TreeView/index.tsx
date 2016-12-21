@@ -16,17 +16,20 @@ import {buildUIMode} from 'camelot-unchained';
 import {GlobalState} from '../../services/session/reducer';
 import SavedDraggable, {Anchor} from '../SavedDraggable';
 
-import {TreeThingNode} from '../../services/session/treething';
+import {TreeThingNode, select as selectNode, add as addNode} from '../../services/session/treething';
 import Node from './components/Node';
 
-function select(state: GlobalState): any {
+function select(state: GlobalState): TreeViewProps {
   return {
-     treeThing: state.treeThing
+    root: state.treeThing.root,
+    selected: state.treeThing.selected
   }
 }
 
 export interface TreeViewProps {
   root: TreeThingNode;
+  selected: TreeThingNode;
+  dispatch?: (action: any) => void;
 }
 
 export interface TreeViewState {
@@ -41,12 +44,22 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
   }
 
   // add a child
-  add(e: React.MouseEvent) {
+  add = () => {
+    const parent = this.props.selected;
+    const node: TreeThingNode = {
+      value: "New Child"
+    };
+    if (parent) {
+      this.props.dispatch(addNode(parent, node));
+    }
+  }
+
+  remove() {
     debugger;
   }
 
-  remove(e: React.MouseEvent) {
-    debugger;
+  private _selectNode = (node: TreeThingNode) => {
+    this.props.dispatch(selectNode(node));
   }
 
   render() {
@@ -56,7 +69,7 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
         defaultY={[-200, Anchor.TO_CENTER]}>
         <div className='building__treething-view dragHandle'>
           <div className='building__treething-tree'>
-            <Node node={this.props.root}/>
+            <Node node={this.props.root} select={this._selectNode} selected={this.props.selected}/>
           </div>
           <div className='building__treething-button building__treething-add' onClick={this.add}>
             Add Child

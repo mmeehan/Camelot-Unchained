@@ -9,9 +9,15 @@
     }
     >.expand, >.spacer {
       width: 10px;
+      padding-right: 2px;
     }
   }
   >.children {
     margin-left: 10px;
+  }
+  &.is-selected {
+    >.header {
+      background-color: orange;
+    }
   }
 }

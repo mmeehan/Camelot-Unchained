@@ -12,6 +12,7 @@
   border-width: 1px 0px;
   border-image: linear-gradient( to left, transparent, #6d6250, transparent);
   border-image-slice: 1;
+  font-size: 12px;
 
   >.building__treething-tree {
     width: 55%;
@@ -19,6 +20,8 @@
     margin: 5% 7%;
     border: 1px solid silver;
     background-color: gray;
+    padding: 2px;
+    overflow-y: auto;
     @import './components/Node/index';
   }
 
@@ -30,7 +33,6 @@
     right: 5%;
     cursor: pointer;
     background-color: gray;
-    font-size: 70%;
     text-align: center;
     line-height: 25px;
   }
