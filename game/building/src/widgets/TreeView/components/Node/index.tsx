@@ -60,7 +60,7 @@ export default class Node extends React.Component<NodeProps, NodeState> {
         </div>
         {hasChildren && isExpanded && <div className='children'>{
           node.children.map((node: TreeThingNode) => {
-            return <Node node={node} select={this.props.select} selected={this.props.selected}/>
+            return <Node key={node.id} node={node} select={this.props.select} selected={this.props.selected}/>
           })
         }</div>}
       </div>

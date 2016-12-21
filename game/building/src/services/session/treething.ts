@@ -18,8 +18,28 @@ const fake: boolean = (win.cuAPI == null);
 // cuAPI placeholders (they don't exist yet)
 
 let client_BuildingTreeChangedCallback: (treeData: any) => void;
-let client_BuildingTree: any = {};
-let client_BuildingTreeUniqueId: number = 999;
+let client_BuildingTree: any =
+// Sample Data
+{
+  "root": {
+    "id": "1000", "value": "Root",
+    "children": [
+      { "id": "1001", "value": "Child",
+        "children": [
+          { "id": "1003", "value": "GrandSon" },
+          { "id": "1004", "value": "GrandDaughter" }
+        ]
+      },
+      { "id": "1002", "value": "Sibling",
+        "children": [
+          { "id": "1005", "value": "StepChild" }
+        ]
+      }
+    ]
+  }
+};
+
+let client_BuildingTreeUniqueId: number = 1005;
 
 function client__BuildingTreeChanged() {
   if (client_BuildingTreeChangedCallback) {
@@ -29,9 +49,11 @@ function client__BuildingTreeChanged() {
 
 function client_OnBuildingTreeChanged(callback: (treeData: any) => void) {
   client_BuildingTreeChangedCallback = callback;
+  setTimeout(() => client__BuildingTreeChanged(), 1);
 }
 
-function client_AddTreeNode(parent: string, node: any) {
+function client_AddBuildingNode(parent: string, node: any) {
+  console.log('ADD BUILDING NODE: parent=' + parent + ' node=' + JSON.stringify(node));
   node.id = ++client_BuildingTreeUniqueId;
   client_BuildingTree.root = copy(client_BuildingTree.root, {
     clean: true,
@@ -45,6 +67,10 @@ function client_AddTreeNode(parent: string, node: any) {
   setTimeout(() => client__BuildingTreeChanged(), 1);
 }
 
+function client_SelectBuildingNode(id: string) {
+  console.log('SELECT BUILDING NODE: id=' + id);
+}
+
 function client_UpdateBuildingTree(treeData: any) {
   client_BuildingTree = treeData;
   client__BuildingTreeChanged();      // simulate a tree update
@@ -53,7 +79,7 @@ function client_UpdateBuildingTree(treeData: any) {
 // Actions
 
 export function add(parent: TreeThingNode, node: TreeThingNode) {
-  client_AddTreeNode(parent.id, node);
+  client_AddBuildingNode(parent.id, node);
   return {
     type: ADD_NODE,
     parent: parent,
@@ -69,6 +95,7 @@ export function receive(treeData: any) {
 }
 
 export function select(node: TreeThingNode) {
+  client_SelectBuildingNode(node ? node.id : null);
   return {
     type: SELECT_NODE,
     node: node
@@ -76,16 +103,11 @@ export function select(node: TreeThingNode) {
 }
 
 // Initialisation
-
 export function initializeTreeThing(dispatch: any) {
-
   // listen for tree updates
   client_OnBuildingTreeChanged((treeData: any) => {
     dispatch(receive(treeData));
   })
-
-  // TEMP: Trigger pretend client update of tree data
-  client_UpdateBuildingTree(treeFromJSON(sampleJSON));
 }
 
 // Types
@@ -105,43 +127,6 @@ export interface TreeThingState {
 const initialState : TreeThingState = {
   root: null,
   selected: null
-}
-
-// Sample Data
-
-const sampleJSON : string = `
-{
-  "root": {
-    "id": "aaf248a4-1f75-4c2f-80a2-ffd6d540b7db", "value": "Root",
-    "children": [
-      { "id": "d18bd5a2-be6f-41a4-89de-7fce5dac2717", "value": "Child",
-        "children": [
-          { "id": "62bd1ef7-597f-488b-b9ff-b19d98c42010", "value": "GrandSon" },
-          { "id": "f27dd32c-5058-4386-8bd3-f8cf92756730", "value": "GrandDaughter" }
-        ]
-      },
-      { "id": "c0741828-51e2-4c54-b996-d6559e03b67d", "value": "Sibling",
-        "children": [
-          { "id": "cda37d02-292a-4a07-918c-d5846ff8ee8b", "value": "StepChild" }
-        ]
-      }
-    ]
-  }
-}`;
-
-// Conversion functions
-
-export function treeFromJSON(json: string) {
-  try {
-    return JSON.parse(json);
-  } catch(e) {
-    console.error(e);
-    return null;
-  }
-}
-
-export function treeToJSON(root: TreeThingNode) {
-  return JSON.stringify(root);
 }
 
 // deep-copy a tree node from a given root node
