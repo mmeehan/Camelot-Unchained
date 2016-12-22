@@ -50,7 +50,7 @@ export default class Node extends React.Component<NodeProps, NodeState> {
     const cls = [ 'building__treething-node' ];
     const isExpanded = this.state.expanded;
     const isSelected = this.props.selected === this.props.node;
-    const arrow = isExpanded ? '▼' : '►';
+    const arrow = isExpanded ? '▼' : '▶';
     cls.push(isRoot ? 'is-root' : 'has-parent');
     hasChildren && cls.push('has-children');
     isSelected && cls.push('is-selected');
