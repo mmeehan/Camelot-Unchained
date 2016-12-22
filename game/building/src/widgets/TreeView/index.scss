@@ -30,6 +30,25 @@
 
   >.building__treething-add {
     top: 7%;
+    >.building__treething-popup {
+      position: relative;
+      z-index: 1;
+      background-color: white;
+      border: 1px solid black;
+      text-align: left;
+      width: 150%;
+      left: -1px;
+      >div {
+        cursor: pointer;
+        padding: 1px 2px;
+        line-height: 120%;
+        font-size: 90%;
+        &:hover {
+          background-color: blue;
+          color: white;
+        }
+      }
+    }
   }
 
   >.building__treething-remove {
