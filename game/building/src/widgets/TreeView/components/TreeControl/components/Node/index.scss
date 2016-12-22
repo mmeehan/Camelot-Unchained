@@ -1,6 +1,10 @@
 .building__treething-node {
   width: 100%;
   >.header {
+    cursor: pointer;
+    &:hover {
+      background-color: rgba(255, 140, 0, 0.3);
+    }
     >span {
       display: inline-block;
     }
@@ -17,7 +21,7 @@
   }
   &.is-selected {
     >.header {
-      background-color: orange;
+      background-color: rgb(255, 140, 0);
     }
   }
 }

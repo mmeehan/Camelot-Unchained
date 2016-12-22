@@ -91,36 +91,9 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
                 <div>Add Child</div>
                 { isAdding
                   ? <div className='building__treething-popup' onClick={this._add}>
-                      <div>Scale 1/4</div>
-                      <div>Scale 1/2</div>
+                      <div>Scale</div>
                       <div>Cylinder</div>
-                      <div>Rotate X 45</div>
-                      <div>Rotate X 90</div>
-                      <div>Rotate X 135</div>
-                      <div>Rotate X 180</div>
-                      <div>Rotate X 225</div>
-                      <div>Rotate X 270</div>
-                      <div>Rotate X 315</div>
-                      <div>Rotate X 360</div>
-                      <div>Rotate Y 45</div>
-                      <div>Rotate Y 90</div>
-                      <div>Rotate Y 135</div>
-                      <div>Rotate Y 180</div>
-                      <div>Rotate Y 225</div>
-                      <div>Rotate Y 270</div>
-                      <div>Rotate Y 315</div>
-                      <div>Rotate Y 360</div>
-                      <div>Rotate Z 45</div>
-                      <div>Rotate Z 90</div>
-                      <div>Rotate Z 135</div>
-                      <div>Rotate Z 180</div>
-                      <div>Rotate Z 225</div>
-                      <div>Rotate Z 270</div>
-                      <div>Rotate Z 315</div>
-                      <div>Rotate Z 360</div>
-                      <div>Skew X</div>
-                      <div>Skew Y</div>
-                      <div>Skew Z</div>
+                      <div>Rotate</div>
                     </div>
                   : undefined
                 }
