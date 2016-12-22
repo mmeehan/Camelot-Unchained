@@ -14,16 +14,7 @@
   border-image-slice: 1;
   font-size: 12px;
 
-  >.building__treething-tree {
-    width: 55%;
-    height: 85%;
-    margin: 5% 7%;
-    border: 1px solid silver;
-    background-color: gray;
-    padding: 2px;
-    overflow-y: auto;
-    @import './components/Node/index';
-  }
+  @import './components/TreeControl/index';
 
   >.building__treething-button {
     border: 1px solid black;

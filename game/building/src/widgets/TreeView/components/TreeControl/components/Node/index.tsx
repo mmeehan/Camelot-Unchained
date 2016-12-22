@@ -10,7 +10,7 @@
  */
 
 import * as React from 'react';
-import {TreeThingNode} from '../../../../services/session/treething';
+import {TreeThingNode} from '../../../../../../services/session/treething';
 
 export interface NodeProps {
   node: TreeThingNode;

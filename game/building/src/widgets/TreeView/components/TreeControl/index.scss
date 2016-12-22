@@ -1,0 +1,17 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+.building__treething-tree {
+  width: 55%;
+  height: 85%;
+  margin: 5% 7%;
+  border: 1px solid silver;
+  background-color: gray;
+  padding: 2px;
+  overflow-y: auto;
+  @import './components/Node/index';
+}
+

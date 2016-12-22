@@ -17,7 +17,7 @@ import {GlobalState} from '../../services/session/reducer';
 import SavedDraggable, {Anchor} from '../SavedDraggable';
 
 import {TreeThingNode, select as selectNode, add as addNode} from '../../services/session/treething';
-import Node from './components/Node';
+import TreeControl from './components/TreeControl';
 
 function select(state: GlobalState): TreeViewProps {
   return {
@@ -63,20 +63,24 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
   }
 
   render() {
+    const canAddChild = this.props.selected;
+    const canRemoveChild = canAddChild && this.props.selected.children && this.props.selected.children.length;
     return (
       <SavedDraggable saveName="building/treething"
         defaultX={[0, Anchor.TO_START]}
         defaultY={[-200, Anchor.TO_CENTER]}>
         <div className='building__treething-view dragHandle'>
-          <div className='building__treething-tree'>
-            <Node node={this.props.root} select={this._selectNode} selected={this.props.selected}/>
-          </div>
-          <div className='building__treething-button building__treething-add' onClick={this.add}>
-            Add Child
-          </div>
-          <div className='building__treething-button building__treething-remove' onClick={this.remove}>
-            Remove Child
-          </div>
+          <TreeControl root={this.props.root} select={this._selectNode} selected={this.props.selected}/>
+          {canAddChild &&
+            <div className='building__treething-button building__treething-add' onClick={this.add}>
+              Add Child
+            </div>
+          }
+          {canRemoveChild &&
+            <div className='building__treething-button building__treething-remove' onClick={this.remove}>
+              Remove Child
+            </div>
+          }
         </div>
       </SavedDraggable>
     )
