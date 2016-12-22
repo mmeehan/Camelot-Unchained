@@ -18,9 +18,6 @@ const fake: boolean = (win.cuAPI == null);
 
 // cuAPI placeholders (they don't exist yet)
 
-let client_BuildingTreeChangedCallback: (treeData: any) => void;
-let client_BuildingTree: any;
-
 // Sample Data
 const client_sampleData = {
   "root": {
@@ -41,6 +38,8 @@ const client_sampleData = {
   }
 };
 
+let client_BuildingTreeChangedCallback: (treeData: any) => void;
+let client_BuildingTree: any = client_sampleData;
 let client_BuildingTreeUniqueId: number = 1005;
 
 function client__BuildingTreeChanged() {
