@@ -209,6 +209,7 @@ export function remove(root: TreeThingNode, node: TreeThingNode) : TreeThingNode
 
 // Search functions
 export function findNode(root: TreeThingNode, node: TreeThingNode): TreeThingNode {
+  if (!root) return;
   if (root === node) return root;
   if (root.children) {
     for (let i = 0; i < root.children.length; ++i) {
@@ -219,6 +220,7 @@ export function findNode(root: TreeThingNode, node: TreeThingNode): TreeThingNod
 }
 
 export function findNodeById(root: TreeThingNode, id: string): TreeThingNode {
+  if (!root) return;
   if (root.id === id) return root;
   if (root.children) {
     for (let i = 0; i < root.children.length; ++i) {
