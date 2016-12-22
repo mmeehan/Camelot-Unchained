@@ -16,7 +16,7 @@ import {buildUIMode} from 'camelot-unchained';
 import {GlobalState} from '../../services/session/reducer';
 import SavedDraggable, {Anchor} from '../SavedDraggable';
 
-import {TreeThingNode, select as selectNode, add as addNode} from '../../services/session/treething';
+import {TreeThingNode, selectNode, addChild, removeChild} from '../../services/session/treething';
 import TreeControl from './components/TreeControl';
 
 function select(state: GlobalState): TreeViewProps {
@@ -50,12 +50,19 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
       value: "New Child"
     };
     if (parent) {
-      this.props.dispatch(addNode(parent, node));
+      this.props.dispatch(addChild(parent, node));
+    } else if (!this.props.root) {
+      // there is no root node, adding a child becomes root
+      this.props.dispatch(addChild(null, node));
     }
   }
 
-  remove() {
-    debugger;
+  // remove a child
+  remove = () => {
+    const parent = this.props.selected;
+    if (parent) {
+      this.props.dispatch(removeChild(parent));
+    }
   }
 
   private _selectNode = (node: TreeThingNode) => {
@@ -63,8 +70,8 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
   }
 
   render() {
-    const canAddChild = this.props.selected;
-    const canRemoveChild = canAddChild && this.props.selected.children && this.props.selected.children.length;
+    const canAddChild = this.props.selected || !this.props.root;
+    const canRemoveChild = this.props.selected && this.props.selected.children && this.props.selected.children.length;
     return (
       <SavedDraggable saveName="building/treething"
         defaultX={[0, Anchor.TO_START]}

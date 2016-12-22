@@ -55,14 +55,20 @@ export default class Node extends React.Component<NodeProps, NodeState> {
     return (
       <div className={cls.join(' ')}>
         <div className='header'>
-          {hasChildren ? (<span className='expand' onClick={() => this.expand()}>{arrow}</span>) : (<span className='spacer'></span>)}
+          { hasChildren
+            ? (<span className='expand' onClick={() => this.expand()}>{arrow}</span>)
+            : (<span className='spacer'></span>)
+          }
           <span className='value' onClick={() => this.select() }>{node.value}</span>
         </div>
-        {hasChildren && isExpanded && <div className='children'>{
-          node.children.map((node: TreeThingNode) => {
-            return <Node key={node.id} node={node} select={this.props.select} selected={this.props.selected}/>
-          })
-        }</div>}
+        { hasChildren && isExpanded
+          ? <div className='children'>{
+              node.children.map((node: TreeThingNode) => {
+                return <Node key={node.id} node={node} select={this.props.select} selected={this.props.selected}/>
+              })
+            }</div>
+          : undefined
+        }
       </div>
     )
   }
