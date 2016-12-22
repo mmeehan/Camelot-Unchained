@@ -33,11 +33,13 @@ export default class Node extends React.Component<NodeProps, NodeState> {
     }
   }
 
-  expand() {
+  expand = (e: React.MouseEvent) => {
     this.setState({ expanded: !this.state.expanded });
+    e.preventDefault();
+    e.stopPropagation();
   }
 
-  select() {
+  select = () => {
     this.props.select(this.props.node);
   }
 
@@ -54,12 +56,12 @@ export default class Node extends React.Component<NodeProps, NodeState> {
     isSelected && cls.push('is-selected');
     return (
       <div className={cls.join(' ')}>
-        <div className='header'>
+        <div className='header' onClick={this.select}>
           { hasChildren
-            ? (<span className='expand' onClick={() => this.expand()}>{arrow}</span>)
+            ? (<span className='expand' onClick={this.expand}>{arrow}</span>)
             : (<span className='spacer'></span>)
           }
-          <span className='value' onClick={() => this.select() }>{node.value}</span>
+          <span className='value'>{node.value}</span>
         </div>
         { hasChildren && isExpanded
           ? <div className='children'>{

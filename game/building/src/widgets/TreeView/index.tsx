@@ -16,7 +16,7 @@ import {buildUIMode} from 'camelot-unchained';
 import {GlobalState} from '../../services/session/reducer';
 import SavedDraggable, {Anchor} from '../SavedDraggable';
 
-import {TreeThingNode, selectNode, addChild, removeChild} from '../../services/session/treething';
+import {TreeThingNode, selectNode, addChild, removeNode} from '../../services/session/treething';
 import TreeControl from './components/TreeControl';
 
 function select(state: GlobalState): TreeViewProps {
@@ -45,11 +45,11 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
     }
   }
 
-  // remove a child
-  remove = () => {
-    const parent = this.props.selected;
-    if (parent) {
-      this.props.dispatch(removeChild(parent));
+  // remove selected Node
+  removeNode = () => {
+    const node = this.props.selected;
+    if (node) {
+      this.props.dispatch(removeNode(node));
     }
   }
 
@@ -78,7 +78,7 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
 
   render() {
     const canAddChild = this.props.selected || !this.props.root;
-    const canRemoveChild = this.props.selected && this.props.selected.children && this.props.selected.children.length;
+    const canRemoveNode = this.props.selected;
     const isAdding = this.state.adding;
     return (
       <SavedDraggable saveName="building/treething"
@@ -88,7 +88,7 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
           <TreeControl root={this.props.root} select={this._selectNode} selected={this.props.selected}/>
           { canAddChild
             ? <div className='building__treething-button building__treething-add' onClick={this._clickedAdd}>
-                <div>Add Child</div>
+                <div>Add</div>
                 { isAdding
                   ? <div className='building__treething-popup' onClick={this._add}>
                       <div>Scale</div>
@@ -100,9 +100,9 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
               </div>
             : undefined
           }
-          { canRemoveChild
-            ? <div className='building__treething-button building__treething-remove' onClick={this.remove}>
-                Remove Child
+          { canRemoveNode
+            ? <div className='building__treething-button building__treething-remove' onClick={this.removeNode}>
+                Remove
               </div>
             : undefined
           }

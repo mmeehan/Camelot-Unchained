@@ -10,7 +10,7 @@ const assign = require('object-assign');
 
 const RECEIVE_TREE = 'building/treething/RECEIVE-TREE';
 const ADD_CHILD = 'building/treething/ADD-CHILD';
-const REMOVE_CHILD = 'building/treething/REMOVE-CHILD';
+const REMOVE_NODE = 'building/treething/REMOVE-NODE';
 const SELECT_NODE = 'building/treething/SELECT-NODE';
 
 const win: any = window;
@@ -74,18 +74,12 @@ function client_AddBuildingNode(parent: string, node: any) {
   setTimeout(() => client__BuildingTreeChanged(), 1);
 }
 
-function client_RemoveBuildingNodeFromParent(parent: string) {
-  console.log('REMOVE BUILDING NODE: parent=' + parent);
+function client_RemoveBuildingNode(node: string) {
+  console.log('REMOVE BUILDING NODE: node=' + node);
+  if (!client_BuildingTree) throw new Error("client_RemoveBuildingNode() called with no tree");
   client_BuildingTree.root = copy(client_BuildingTree.root, {
     clean: true,
-    copied: (from: TreeThingNode, to: TreeThingNode) => {
-      if (to.id === parent) {
-        // remove the last child
-        if (to.children) {
-          to.children.pop();
-        }
-      }
-    }
+    remove: findNodeById(client_BuildingTree.root, node)
   });
   setTimeout(() => client__BuildingTreeChanged(), 1);
 }
@@ -110,11 +104,11 @@ export function addChild(parent: TreeThingNode, node: TreeThingNode) {
   }
 }
 
-export function removeChild(parent: TreeThingNode) {
-  client_RemoveBuildingNodeFromParent(parent.id);
+export function removeNode(node: TreeThingNode) {
+  client_RemoveBuildingNode(node.id);
   return {
-    type: REMOVE_CHILD,
-    parent: parent
+    type: REMOVE_NODE,
+    parent: node
   }
 }
 
@@ -168,8 +162,10 @@ const initialState : TreeThingState = {
 //    parent: parent element (used internally)
 export function copy(node: TreeThingNode, options: any = {}) : TreeThingNode {
   if (node) {
-    const copied: (from: TreeThingNode, to: TreeThingNode) => void = options && options.copied;
-    const clean: TreeThingNode = options && options.clean;
+    const remove: TreeThingNode = options.remove;
+    if (node === remove) return;
+    const copied: (from: TreeThingNode, to: TreeThingNode) => void = options.copied;
+    const clean: TreeThingNode = options.clean;
     const root = <TreeThingNode>{};
     root.value = node.value;
     if (node.id) root.id = node.id;
@@ -181,7 +177,10 @@ export function copy(node: TreeThingNode, options: any = {}) : TreeThingNode {
     if (node.children) {
       root.children = <TreeThingNode[]>[];
       for (var i = 0; i < node.children.length; ++i) {
-        root.children.push(copy(node.children[i], { parent: node, copied: copied, clean: clean }));
+        const child = copy(node.children[i], assign({}, options, { parent: node }));
+        if (child) {
+          root.children.push(child);
+        }
       }
     }
     if (copied) copied(node, root);
@@ -203,17 +202,9 @@ export function insert(root: TreeThingNode, parent: TreeThingNode, node: TreeThi
 }
 
 // Remove a child node, creating a copy of the tree in the process
-export function remove(root: TreeThingNode, parent: TreeThingNode) : TreeThingNode {
+export function remove(root: TreeThingNode, node: TreeThingNode) : TreeThingNode {
   if (!root) throw new Error("treething:remove() Attempt to remove a node from a non-existent tree");
-  return copy(root, {
-    copied: (from: TreeThingNode, to: TreeThingNode) => {
-      if (from === parent) {
-        if (to.children) {
-          to.children.pop();
-        }
-      }
-    }
-  });
+  return copy(root, { remove: node });
 }
 
 // Search functions
@@ -249,9 +240,9 @@ export default function reducer(state: TreeThingState = initialState, action: an
       root: root,
       selected: state.selected ? findNodeById(root, state.selected.id) : undefined
     });
-  case REMOVE_CHILD:
-    // remove the last child from the specified node
-    return assign({}, state, { root: remove(state.root, action.parent) });
+  case REMOVE_NODE:
+    // remove the selected node
+    return assign({}, state, { root: remove(state.root, action.node) });
   case SELECT_NODE:
     // Make this node the selected node, or if already selected, deselect
     return assign({}, state, {
