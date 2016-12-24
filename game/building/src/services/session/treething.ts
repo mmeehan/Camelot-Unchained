@@ -8,13 +8,33 @@ import {events} from 'camelot-unchained';
 
 const assign = require('object-assign');
 
-const RECEIVE_TREE = 'building/treething/RECEIVE-TREE';
-const ADD_CHILD = 'building/treething/ADD-CHILD';
-const REMOVE_NODE = 'building/treething/REMOVE-NODE';
-const SELECT_NODE = 'building/treething/SELECT-NODE';
-
 const win: any = window;
 const fake: boolean = (win.cuAPI == null);
+
+// Types
+
+export interface TreeThingNode {
+  id?: string;
+  value: string|number;
+  parent?: TreeThingNode;
+  children?: TreeThingNode[];
+}
+
+export interface TreeThingState {
+  root: TreeThingNode;
+  selected: TreeThingNode;
+}
+
+// module definition
+
+import { Module, generateID } from 'redux-typed-modules';
+
+const module = new Module<TreeThingState, any>({
+  initialState: {
+    root: null,
+    selected: null
+  }
+});
 
 // cuAPI placeholders (they don't exist yet)
 
@@ -93,65 +113,12 @@ function client_UpdateBuildingTree(treeData: any) {
   client__BuildingTreeChanged();      // simulate a tree update
 }
 
-// Actions
-
-export function addChild(parent: TreeThingNode, node: TreeThingNode) {
-  client_AddBuildingNode(parent ? parent.id : null, node);
-  return {
-    type: ADD_CHILD,
-    parent: parent,
-    node: node
-  }
-}
-
-export function removeNode(node: TreeThingNode) {
-  client_RemoveBuildingNode(node.id);
-  return {
-    type: REMOVE_NODE,
-    parent: node
-  }
-}
-
-export function receive(treeData: any) {
-  return {
-    type: RECEIVE_TREE,
-    data: treeData
-  }
-}
-
-export function selectNode(node: TreeThingNode) {
-  client_SelectBuildingNode(node ? node.id : null);
-  return {
-    type: SELECT_NODE,
-    node: node
-  }
-}
-
 // Initialisation
 export function initializeTreeThing(dispatch: any) {
   // listen for tree updates
   client_OnBuildingTreeChanged((treeData: any) => {
     dispatch(receive(treeData));
   })
-}
-
-// Types
-
-export interface TreeThingNode {
-  id?: string;
-  value: string|number;
-  parent?: TreeThingNode;
-  children?: TreeThingNode[];
-}
-
-export interface TreeThingState {
-  root: TreeThingNode;
-  selected: TreeThingNode;
-}
-
-const initialState : TreeThingState = {
-  root: null,
-  selected: null
 }
 
 // deep-copy a tree node from a given root node
@@ -230,34 +197,123 @@ export function findNodeById(root: TreeThingNode, id: string): TreeThingNode {
   }
 }
 
-// Reducer
+// addChild action
 
-export default function reducer(state: TreeThingState = initialState, action: any = {}): TreeThingState {
-  switch (action.type) {
-  case ADD_CHILD:
+interface AddChildAction {
+  id: string;
+  parent: TreeThingNode;
+  node: TreeThingNode;
+}
+
+interface AddChildActionArgs {
+  parent: TreeThingNode;
+  node: TreeThingNode;
+}
+
+export const addChild = module.createAction<AddChildAction, AddChildActionArgs>({
+  action: (args: AddChildActionArgs) => {
+    const { parent, node } = args;
+    client_AddBuildingNode(parent ? parent.id : null, node);
+    return {
+      id: 'building/treething/ADD-CHILD',
+      parent: parent,
+      node: node
+    }
+  },
+  reducer: (state, action) => {
     // add a dummy node, it will be replaced by the actual node as soon as we get the next
     // RECEIVE_TREE action.  The only difference is, this node doesn't yet have an ID
     const root: TreeThingNode = insert(state.root, action.parent, action.node);
-    return assign({}, state, {
+    return {
       root: root,
       selected: state.selected ? findNodeById(root, state.selected.id) : undefined
-    });
-  case REMOVE_NODE:
+    };
+  }
+});
+
+// removeChild action
+
+interface RemoveNodeAction {
+  id: string;
+  node: TreeThingNode;
+}
+
+interface RemoveNodeActionArgs {
+  node: TreeThingNode;
+}
+
+export const removeNode = module.createAction<RemoveNodeAction, RemoveNodeActionArgs>({
+  action: (args: RemoveNodeActionArgs) => {
+    const { node } = args;
+    client_RemoveBuildingNode(node.id);
+    return {
+      id: 'building/treething/REMOVE-NODE',
+      node: node
+    }
+  },
+  reducer: (state, action) => {
     // remove the selected node
-    return assign({}, state, { root: remove(state.root, action.node) });
-  case SELECT_NODE:
-    // Make this node the selected node, or if already selected, deselect
-    return assign({}, state, {
-      selected: state.selected !== action.node ? findNode(state.root, action.node) : undefined
-    });
-  case RECEIVE_TREE:
+    return { root: remove(state.root, action.node) };
+  }
+});
+
+// receive action
+
+interface ReceiveAction {
+  id: string;
+  data: any
+}
+
+interface ReceiveActionArgs {
+  data: any
+}
+
+export const receive = module.createAction<ReceiveAction, ReceiveActionArgs>({
+  action: (args: ReceiveActionArgs) => {
+    const { data } = args;
+    return {
+      id: 'building/treething/RECEIVE',
+      data: data
+    }
+  },
+  reducer: (state, action) => {
     // RECEIVE a new tree from the client, happens after an add/remove or whenever
     // need to re-select selected node by ID
-    if (!action.data) action.data = { root: undefined };
-    return assign({}, state, {
-      root: action.data.root,
-      selected: state.selected ? findNodeById(action.data.root, state.selected.id) : undefined
-    });
+    const root = action.data && action.data.root;
+    return {
+      root: root,
+      selected: state.selected ? findNodeById(root, state.selected.id) : undefined
+    };
   }
-  return state;
+});
+
+// selectNode action
+
+interface SelectNodeAction {
+  id: string;
+  node: TreeThingNode;
 }
+
+interface SelectNodeActionArgs {
+  node: TreeThingNode;
+}
+
+export const selectNode = module.createAction<SelectNodeAction, SelectNodeActionArgs>({
+  action: (args: SelectNodeActionArgs) => {
+    const { node } = args;
+  client_SelectBuildingNode(node ? node.id : null);
+    return {
+      id: 'building/treething/SELECT-NODE',
+      node: node
+    }
+  },
+  reducer: (state, action) => {
+    // Make this node the selected node, or if already selected, deselect
+    return {
+      selected: state.selected !== action.node ? findNode(state.root, action.node) : undefined
+    };
+  }
+});
+
+// Reducer
+export default module.createReducer();

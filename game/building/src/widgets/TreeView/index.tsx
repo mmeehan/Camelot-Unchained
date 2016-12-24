@@ -49,12 +49,12 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
   removeNode = () => {
     const node = this.props.selected;
     if (node) {
-      this.props.dispatch(removeNode(node));
+      this.props.dispatch(removeNode({ node: node }));
     }
   }
 
   private _selectNode = (node: TreeThingNode) => {
-    this.props.dispatch(selectNode(node));
+    this.props.dispatch(selectNode({ node: node }));
   }
 
   private _clickedAdd = () => {
@@ -69,10 +69,10 @@ class TreeView extends React.Component<TreeViewProps, TreeViewState> {
     this.setState({ adding: false });
     const parent = this.props.selected;
     if (parent) {
-      this.props.dispatch(addChild(parent, node));
+      this.props.dispatch(addChild({ parent: parent, node: node }));
     } else if (!this.props.root) {
       // there is no root node, adding a child becomes root
-      this.props.dispatch(addChild(null, node));
+      this.props.dispatch(addChild({ parent: null, node: node }));
     }
   }
 

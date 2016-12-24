@@ -76,7 +76,8 @@
     "react-resizable": "^1.4.2",
     "react-select": "^1.0.0-beta13",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "redux-typed-modules": "^2.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",
