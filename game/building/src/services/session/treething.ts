@@ -117,7 +117,7 @@ function client_UpdateBuildingTree(treeData: any) {
 export function initializeTreeThing(dispatch: any) {
   // listen for tree updates
   client_OnBuildingTreeChanged((treeData: any) => {
-    dispatch(receive(treeData));
+    dispatch(receive({ data: treeData }));
   })
 }
 
