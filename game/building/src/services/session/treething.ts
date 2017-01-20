@@ -126,6 +126,7 @@ export function initializeTreeThing(dispatch: any) {
 //  options:
 //    clean: true/false -- if true, removes properties not provided by client (added by us, e.g. parent references)
 //    copied: called after each node is copied with the old and new node.  Allows children to be inserted or removed
+//    remove: specifies a note to be removed during the copy
 //    parent: parent element (used internally)
 export function copy(node: TreeThingNode, options: any = {}) : TreeThingNode {
   if (node) {
