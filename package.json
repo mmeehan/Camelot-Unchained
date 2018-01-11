@@ -4,7 +4,7 @@
   "description": "Camelot Unchained UI",
   "main": "index.js",
   "dependencies": {
-    "tslint": "^5.1.0"
+    "tslint": "^5.9.0"
   },
   "devDependencies": {
     "tslint": "^5.1.0"
