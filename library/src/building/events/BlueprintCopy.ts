@@ -9,15 +9,15 @@ import BuildingEventTopics from './BuildingEventTopics';
 import { EventEmitter } from '../../events/EventEmitter';
 import client from '../../core/client';
 
-function run(emitter: EventEmitter, topic: string) {
-  if (client.OnBlockSelected) {
+function startListening(emitter: EventEmitter, topic: string) {
+  if (client.OnCopyBlueprint) {
     client.OnCopyBlueprint(() => {
       emitter.emit(BuildingEventTopics.handlesBlueprintCopy, {});
     });
   }
 }
 
-export default class BlockSelectListener {
+export default class BlueprintCopyListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlueprintCopy;
@@ -25,7 +25,7 @@ export default class BlockSelectListener {
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.topic);
+      startListening(emitter, this.topic);
     }
   }
 }

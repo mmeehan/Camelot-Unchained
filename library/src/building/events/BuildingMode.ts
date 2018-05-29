@@ -13,8 +13,8 @@ import buildUIMode from '../../core/constants/buildUIMode';
 
 import { getBlockForBlockId, getMaterialForBlockId } from '../../building/building';
 
-function run(emitter: EventEmitter, topic: string) {
-  if (client.OnBlockSelected) {
+function startListening(emitter: EventEmitter, topic: string) {
+  if (client.OnBuildingModeChanged) {
     client.OnBuildingModeChanged((mode: buildUIMode) => {
       emitter.emit(topic, { mode });
     });
@@ -29,7 +29,7 @@ export default class BuildingModeListener {
   public start(emitter: EventEmitter) {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.topic);
+      startListening(emitter, this.topic);
     }
   }
 }

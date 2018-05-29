@@ -14,7 +14,7 @@ import * as building from '../../building/building';
 import BuildingMaterial from '../../building/classes/BuildingMaterial';
 import BuildingBlock from '../../building/classes/BuildingBlock';
 
-function run(emitter: EventEmitter, topic: string) {
+function startListening(emitter: EventEmitter, topic: string) {
 
   if (client.OnBlockSelected) {
     client.OnBlockSelected((blockid: number) => {
@@ -37,7 +37,7 @@ export default class BlockSelectListener {
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.topic);
+      startListening(emitter, this.topic);
     }
   }
 }

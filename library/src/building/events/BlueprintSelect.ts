@@ -9,8 +9,8 @@ import { EventEmitter } from '../../events/EventEmitter';
 import BuildingEventTopics from './BuildingEventTopics';
 import client from '../../core/client';
 
-function run(emitter: EventEmitter, topic: string) {
-  if (client.OnBlockSelected) {
+function startListening(emitter: EventEmitter, topic: string) {
+  if (client.OnBlueprintSelected) {
     client.OnBlueprintSelected(function() {
       // todo: how can i tell which blueprint was selected? There are no parameters. Also, it never seems to be called
       console.log('OnBlueprintSelected: ' + JSON.stringify([].slice.call(arguments)));
@@ -18,7 +18,7 @@ function run(emitter: EventEmitter, topic: string) {
   }
 }
 
-export default class BlockSelectListener {
+export default class BlueprintSelectListener {
   public listening: boolean = false;
   public type: string;
   public topic: string = BuildingEventTopics.handlesBlueprintSelect;
@@ -26,7 +26,7 @@ export default class BlockSelectListener {
   public start(emitter: EventEmitter): void {
     if (!this.listening) {
       this.listening = true;
-      run(emitter, this.topic);
+      startListening(emitter, this.topic);
     }
   }
 }
